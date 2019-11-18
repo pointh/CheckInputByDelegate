@@ -1,18 +1,22 @@
 ﻿using System;
+using System.Diagnostics;
 
 namespace CheckInputByDelegate
 {
     class Program
     {
-        delegate bool CheckInputFunc(string s);
+        public delegate bool CheckInputFunc(string s);
+        public static event CheckInputFunc Check;
 
         static bool StringLongerThan2(string s)
         {
+            Debug.WriteLine("StringLongerThan2");
             return s.Length > 2;
         }
 
         static bool StringCanBeInt(string s)
         {
+            Debug.WriteLine("StringCanBeInt");
             return int.TryParse(s, out int result);
         }
 
@@ -30,6 +34,30 @@ namespace CheckInputByDelegate
 
             return input;
         }
+
+        static string CheckedInputMulti(CheckInputFunc[] fArr)
+        {
+            bool isOK = false;
+            string input;
+            do
+            {
+                input = Console.ReadLine();
+                foreach (var f in fArr)
+                {
+                    if (!f(input))
+                    {
+                        Console.WriteLine($"Špatný vstup {input}");
+                        isOK = false;
+                        break;
+                    }
+                    else
+                        isOK = true;
+                }
+            } while (isOK == false);
+
+            return input;
+        }
+
         static void Main(string[] args)
         {
             Console.WriteLine("Hello World!");
@@ -41,6 +69,12 @@ namespace CheckInputByDelegate
             Console.WriteLine("Integer jako string:");
             string IntInString = CheckedInput(StringCanBeInt);
             Console.WriteLine($"OK: {IntInString}\n");
+
+            Check += StringLongerThan2;
+            Check += StringCanBeInt;
+
+            string IntLongerThan2Positions = CheckedInputMulti(new CheckInputFunc[] {StringCanBeInt, StringLongerThan2});
+            Console.WriteLine($"OK: {IntLongerThan2Positions}\n");
         }
     }
 }
