@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Globalization;
 
 namespace CheckInputByDelegate
 {
@@ -7,8 +8,8 @@ namespace CheckInputByDelegate
 
     struct CriteriaRecord
     {
-        internal CheckInputFunc f;
-        internal string ErrMsg;
+        public CheckInputFunc f;
+        public string ErrMsg;
     }
 
     class Program
@@ -39,9 +40,9 @@ namespace CheckInputByDelegate
                 {
                     if (!r.f(input))
                     {
-                        Console.WriteLine($"Špatný vstup {r.ErrMsg}");
+                        Console.WriteLine($"Špatný vstup: {r.ErrMsg}");
                         isOK = false;
-                        break;
+                        //break;
                     }
                     else
                         isOK = true;
@@ -63,6 +64,27 @@ namespace CheckInputByDelegate
             return int.TryParse(s, out int result);
         }
 
+        static bool DoubleFrom100To1000(string s)
+        {
+            CultureInfo czechCultureInfo = CultureInfo.GetCultureInfo("cs-CZ");
+            
+            double resultLocal = double.NaN, resultCz = double.NaN;
+
+            bool localIsOK = double.TryParse(s, NumberStyles.Float, CultureInfo.CurrentCulture, out resultLocal);
+            bool CzIsOK = double.TryParse(s, NumberStyles.Float, czechCultureInfo, out resultCz);
+
+            if (localIsOK || CzIsOK)
+            {
+                if (resultLocal >= 100.0 && resultLocal <= 1000.0)
+                    return true;
+                if (resultCz >= 100.0 && resultLocal < 1000.0)
+                    return true;
+                return false;
+            }
+
+            return false;
+        }
+
         static void Main()
         {
             Console.WriteLine("Delší než 2 znaky:");
@@ -73,18 +95,21 @@ namespace CheckInputByDelegate
             string IntInString = CheckedInput(StringCanBeInt);
             Console.WriteLine($"OK: {IntInString}\n");
 
-            string IntLongerThan2Positions = CheckedInputMultiCriteria(
+            Console.WriteLine("Double v rozsahu 100 až 1000");
+            string doubleLongerThan2Positions = CheckedInputMultiCriteria(
                 new CriteriaRecord[] {
-                    new CriteriaRecord {
-                        f =StringCanBeInt,
-                        ErrMsg = "String není interpretovatelný jako číslo."
-                    },
                     new CriteriaRecord {
                         f = StringLongerThan2,
                         ErrMsg = "String není delší než 2 znaky"
-                    } }
+                    },
+                    new CriteriaRecord
+                    {
+                        f = DoubleFrom100To1000,
+                        ErrMsg = "String musí být převoditelný na double <100.0;1000.0>"
+                    }
+                }
                 );
-            Console.WriteLine($"OK: {IntLongerThan2Positions}\n");
+            Console.WriteLine($"OK: {doubleLongerThan2Positions}\n");
         }
     }
 }
