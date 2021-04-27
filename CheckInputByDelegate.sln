@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29215.179
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CheckInputByDelegate", "CheckInputByDelegate\CheckInputByDelegate.csproj", "{231644C1-34ED-4A39-BB7B-8635A01544ED}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CheckInputByDelegate", "CheckInputByDelegate\CheckInputByDelegate.csproj", "{231644C1-34ED-4A39-BB7B-8635A01544ED}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CheckInputInForms", "CheckInputInForms\CheckInputInForms.csproj", "{9B97D218-CADB-43F0-A0BE-49A1773A34CC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{231644C1-34ED-4A39-BB7B-8635A01544ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{231644C1-34ED-4A39-BB7B-8635A01544ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{231644C1-34ED-4A39-BB7B-8635A01544ED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9B97D218-CADB-43F0-A0BE-49A1773A34CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B97D218-CADB-43F0-A0BE-49A1773A34CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9B97D218-CADB-43F0-A0BE-49A1773A34CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9B97D218-CADB-43F0-A0BE-49A1773A34CC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
