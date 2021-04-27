@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace CheckInputInForms
 {
-    public delegate bool CheckInputFunc(string s);
+    public delegate bool CheckInputFunc(string s, List<string> e);
 
     public partial class Form1 : Form
     {
@@ -19,23 +19,54 @@ namespace CheckInputInForms
             InitializeComponent();
         }
 
-        static bool CheckedInput(CheckInputFunc f, string input)
+        bool CheckedInputErrors(CheckInputFunc[] f, string input, List<string> errors)
         {
-            return f(input);
+            bool b = true, thisOK = true;
+            foreach (var x in f)
+            {
+                thisOK = x(input, errors);
+                b = b && thisOK;
+            }
+            return b;
         }
 
-        static bool StringLongerThan2(string s)
+
+        bool StringLongerThan2(string s, List<string> errorList)
         {
-            return s.Length > 2;
+            if (s.Length > 2)
+            {
+                return true;
+            }
+            else
+            {
+                errorList.Add("String musí být delší než 2 znaky");
+                return false;
+            }
+        }
+
+        bool StringCanBeInt(string s, List<string> errorList)
+        {
+            if (int.TryParse(s, out int result))
+            {
+                return true;
+            }
+            else
+            {
+                errorList.Add($"{s} nemůže být celé číslo");
+                return false;
+            }
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
+            List<string> errors = new List<string>();
             label1.Text = ((Button)sender).Text + " akce: ";
-            if (CheckedInput(StringLongerThan2, textBox1.Text) == false)
+
+            if (CheckedInputErrors(new CheckInputFunc[] { StringLongerThan2, StringCanBeInt },
+                textBox1.Text, errors) == false)
             {
+                label1.Text += string.Join(",\n", errors.ToArray());
                 label1.Visible = true;
-                label1.Text += "Vstup musí být delší než 2 znaky";
             }
             else
                 label1.Visible = false;
