@@ -10,51 +10,15 @@ using System.Windows.Forms;
 
 namespace CheckInputInForms
 {
-    public delegate bool CheckInputFunc(string s, List<string> e);
-
     public partial class Form1 : Form
     {
+        public event Validations.CheckInputFunc ValidationFinished;
+
+        public Form2 SlaveForm;
+
         public Form1()
         {
             InitializeComponent();
-        }
-
-        bool CheckedInputErrors(CheckInputFunc[] f, string input, List<string> errors)
-        {
-            bool b = true, thisOK = true;
-            foreach (var x in f)
-            {
-                thisOK = x(input, errors);
-                b = b && thisOK;
-            }
-            return b;
-        }
-
-
-        bool StringLongerThan2(string s, List<string> errorList)
-        {
-            if (s.Length > 2)
-            {
-                return true;
-            }
-            else
-            {
-                errorList.Add("String musí být delší než 2 znaky");
-                return false;
-            }
-        }
-
-        bool StringCanBeInt(string s, List<string> errorList)
-        {
-            if (int.TryParse(s, out int result))
-            {
-                return true;
-            }
-            else
-            {
-                errorList.Add($"{s} nemůže být celé číslo");
-                return false;
-            }
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -62,14 +26,29 @@ namespace CheckInputInForms
             List<string> errors = new List<string>();
             label1.Text = ((Button)sender).Text + " akce: ";
 
-            if (CheckedInputErrors(new CheckInputFunc[] { StringLongerThan2, StringCanBeInt },
-                textBox1.Text, errors) == false)
+            if (Validations.CheckedInputWithErrors(
+                new Validations.CheckInputFunc[] 
+                    { Validations.StringLongerThan2, Validations.StringCanBeInt },
+                textBox1.Text, 
+                errors) == false)
             {
                 label1.Text += string.Join(",\n", errors.ToArray());
                 label1.Visible = true;
             }
             else
                 label1.Visible = false;
+
+            // Signalizuje ostatním formulářům, že byla ukončena validace
+            // a spouští metody navěšené na ValidationFinished
+            ValidationFinished?.Invoke(textBox1.Text, errors);
+
+            textBox1.Focus();
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            SlaveForm = new Form2(this);
+            SlaveForm.Show();
         }
     }
 }
