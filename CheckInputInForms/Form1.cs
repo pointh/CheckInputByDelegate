@@ -12,8 +12,10 @@ namespace CheckInputInForms
 {
     public partial class Form1 : Form
     {
+        // Ostatním třídám: Sem si navěšujte váš kód, který se spustí vždy po validaci textBox1
         public event Validations.CheckInputFunc ValidationFinished;
 
+        // Logovací formulář s historií validace textBox1
         public Form2 SlaveForm;
 
         public Form1()
